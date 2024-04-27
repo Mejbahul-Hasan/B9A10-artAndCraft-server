@@ -27,6 +27,12 @@ async function run() {
 
     const itemCollection = client.db("artAndCraftDB").collection("items");
 
+    app.get('/items', async(req, res)=>{
+      const cursor = itemCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
     app.post('/items', async (req, res) => {
       const addItem = req.body;
       console.log(addItem);
