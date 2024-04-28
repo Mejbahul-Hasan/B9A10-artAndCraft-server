@@ -27,17 +27,23 @@ async function run() {
 
     const itemCollection = client.db("artAndCraftDB").collection("items");
 
-    app.get('/items', async(req, res)=>{
+    app.get('/items', async (req, res) => {
       const cursor = itemCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     })
 
-    app.get('/items/:id', async(req, res)=>{
-        const id = req.params.id;
-        const query = {_id: new ObjectId(id)};
-        const item = await itemCollection.findOne(query);
-        res.send(item);
+    app.get('/items/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const item = await itemCollection.findOne(query);
+      res.send(item);
+    })
+
+    app.get('/items-email/:email', async (req, res) => {
+      const result = await itemCollection.find({ email: req.params.email }).toArray();
+      console.log(result);
+      res.send(result);
     })
 
     app.post('/items', async (req, res) => {
