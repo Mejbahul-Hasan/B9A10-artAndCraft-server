@@ -23,9 +23,10 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const itemCollection = client.db("artAndCraftDB").collection("items");
+    const newItemCollection = client.db("artAndCraftDB").collection("newItems");
 
     app.get('/items', async (req, res) => {
       const cursor = itemCollection.find();
@@ -81,8 +82,24 @@ async function run() {
       const result = await itemCollection.updateOne(filter, item, options);
       res.send(result);
     })
+
+    // newItems section CRUD operation
+
+    app.get('/newItems', async (req, res) => {
+      const cursor = newItemCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
+
+    app.get('/newItems/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const newItem = await newItemCollection.findOne(query);
+      res.send(newItem);
+    })
+
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
@@ -90,8 +107,6 @@ async function run() {
   }
 }
 run().catch(console.dir);
-
-
 
 
 app.get('/', (req, res) => {
